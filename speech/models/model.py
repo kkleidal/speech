@@ -104,11 +104,9 @@ class Model(nn.Module):
         """
         raise NotImplementedError
 
-    @property
     def is_cuda(self):
-        return self.parameters().next().is_cuda
+        return next(self.parameters()).is_cuda
 
-    @property
     def encoder_dim(self):
         return self._encoder_dim
 
@@ -125,7 +123,7 @@ class LinearND(nn.Module):
 
     def forward(self, x):
         size = x.size()
-        n = np.prod(size[:-1])
+        n = int(np.prod(size[:-1]))
         out = x.contiguous().view(n, size[-1])
         out = self.fc(out)
         size = list(size)

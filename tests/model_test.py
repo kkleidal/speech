@@ -19,14 +19,14 @@ def test_model():
 
     x_enc = model.encode(x)
     t_dim = model.conv_out_size(time_steps, 0)
-    expected_size = torch.Size((batch_size, t_dim, model.encoder_dim))
+    expected_size = torch.Size((batch_size, t_dim, model.encoder_dim()))
 
     # Check output size is correct.
     assert x_enc.size() == expected_size
 
     # Check cuda attribute works
-    assert not model.is_cuda
+    assert not model.is_cuda()
     if torch.cuda.is_available():
         model.cuda()
-        assert model.is_cuda
+        assert model.is_cuda()
 

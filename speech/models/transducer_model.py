@@ -17,7 +17,7 @@ class Transducer(model.Model):
 
         # For decoding
         decoder_cfg = config["decoder"]
-        rnn_dim = self.encoder_dim
+        rnn_dim = self.encoder_dim()
         embed_dim = decoder_cfg["embedding_dim"]
         self.embedding = nn.Embedding(vocab_size, embed_dim)
         self.dec_rnn = nn.GRU(input_size=embed_dim,
@@ -36,7 +36,7 @@ class Transducer(model.Model):
         return self.forward_impl(x, y_mat)
 
     def forward_impl(self, x, y):
-        if self.is_cuda:
+        if self.is_cuda():
             x = x.cuda()
             y = y.cuda()
         x = self.encode(x)
@@ -61,7 +61,7 @@ class Transducer(model.Model):
         # preprend zeros
         b, t, h = y.shape
         start = autograd.Variable(torch.zeros((b, 1, h)))
-        if self.is_cuda:
+        if self.is_cuda():
             start = start.cuda()
         y = torch.cat([start, y], dim=1)
 

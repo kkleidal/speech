@@ -16,14 +16,14 @@ class CTC(model.Model):
 
         # include the blank token
         self.blank = output_dim
-        self.fc = model.LinearND(self.encoder_dim, output_dim + 1)
+        self.fc = model.LinearND(self.encoder_dim(), output_dim + 1)
 
     def forward(self, batch):
         x, y, x_lens, y_lens = self.collate(*batch)
         return self.forward_impl(x)
 
     def forward_impl(self, x, softmax=False):
-        if self.is_cuda:
+        if self.is_cuda():
             x = x.cuda()
         x = self.encode(x)
         x = self.fc(x)
@@ -45,7 +45,7 @@ class CTC(model.Model):
         x_lens = torch.IntTensor([max_t] * len(inputs))
         x = torch.FloatTensor(model.zero_pad_concat(inputs))
         y_lens = torch.IntTensor([len(l) for l in labels])
-        y = torch.IntTensor([l for label in labels for l in label])
+        y = torch.IntTensor([int(l) for label in labels for l in label])
         batch = [x, y, x_lens, y_lens]
         batch = [autograd.Variable(v) for v in batch]
         if self.volatile:

@@ -18,7 +18,7 @@ class Seq2Seq(model.Model):
 
         # For decoding
         decoder_cfg = config["decoder"]
-        rnn_dim = self.encoder_dim
+        rnn_dim = self.encoder_dim()
         embed_dim = decoder_cfg["embedding_dim"]
         self.embedding = nn.Embedding(vocab_size, embed_dim)
         self.dec_rnn = nn.GRU(input_size=embed_dim,
@@ -53,7 +53,7 @@ class Seq2Seq(model.Model):
 
     def loss(self, batch):
         x, y = self.collate(*batch)
-        if self.is_cuda:
+        if self.is_cuda():
             x = x.cuda()
             y = y.cuda()
         out, alis = self.forward_impl(x, y)
@@ -73,7 +73,7 @@ class Seq2Seq(model.Model):
 
     def forward(self, batch):
         x, y = self.collate(*batch)
-        if self.is_cuda:
+        if self.is_cuda():
             x = x.cuda()
             y = y.cuda()
         return self.forward_impl(x, y)[0]
@@ -159,7 +159,7 @@ class Seq2Seq(model.Model):
         x, y = self.collate(*batch)
         end_tok = y.data[0, -1] # TODO
         t = y
-        if self.is_cuda:
+        if self.is_cuda():
             x = x.cuda()
             t = y.cuda()
         x = self.encode(x)
@@ -174,7 +174,7 @@ class Seq2Seq(model.Model):
         x, y = self.collate(*batch)
         start_tok = y.data[0, 0]
         end_tok = y.data[0, -1] # TODO
-        if self.is_cuda:
+        if self.is_cuda():
             x = x.cuda()
             y = y.cuda()
         x = self.encode(x)
