@@ -145,7 +145,7 @@ def make_loader(dataset_json, preproc,
                 batch_size=batch_size,
                 sampler=sampler,
                 num_workers=num_workers,
-                collate_fn=lambda batch : zip(*batch),
+                collate_fn=lambda batch : list(zip(*batch)),
                 drop_last=True)
     return loader
 
